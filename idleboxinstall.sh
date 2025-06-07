@@ -6,16 +6,6 @@
 
 set -e
 
-if [ ! -d /bedrock ]; then
-    echo "This script must be run on a Bedrock Linux system (missing /bedrock/)"
-    exit 1
-fi
-
-if [ "$(id -u)" -ne 0 ]; then
-  echo "Must be run as root."
-  exit 1
-fi
-
 show_help() {
     echo "idlebox - Bootstrap a stratum that just contains busybox"
     echo "Usage: $0 [path to busybox] [name]"
@@ -25,6 +15,16 @@ show_help() {
 
 if [ $# -lt 1 ]; then
     show_help
+fi
+
+if [ ! -d /bedrock ]; then
+    echo "This script must be run on a Bedrock Linux system (missing /bedrock/)"
+    exit 1
+fi
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Must be run as root."
+  exit 1
 fi
 
 arg="$1"
