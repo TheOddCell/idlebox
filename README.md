@@ -2,8 +2,6 @@
 
 **idlebox** is a minimal [Bedrock Linux](https://bedrocklinux.org/) stratum built entirely around BusyBox.
 
----
-
 ## What is idlebox?
 
 idlebox is a **very minimal Bedrock Linux stratum** that provides just BusyBox — nothing else.  
@@ -13,51 +11,39 @@ It’s ideal for:
 - Micro-container environments
 - Fans of the most minimalistic init system possible
 
----
 
 ## How can I use idlebox?
 
-### 1. Download the installer script
+### 1. Download the brl fetch script
 
-Download the latest version here:  
-[`idleboxinstall.sh`](https://github.com/TheOddCell/idlebox/releases/download/v1.1.0/idleboxinstall.sh)
+Download the latest version here:  [`idlebox`](https://github.com/TheOddCell/idlebox/releases/download/v2.0.0/idlebox)
 
----
 
-### 2. Download a BusyBox binary
+### 2. Install the stratum
 
-Prebuilt binaries are available at:  
-https://busybox.net/downloads/binaries/
+Place the downloaded file into `/bedrock/share/brl-fetch/distros/` and type in the command `brl fetch idlebox` as `root`. You may use the same paramaters for `brl fetch`, found at `brl fetch --help`
 
-> These are musl-based. `login` may not work with modern password hashes (see step 5).
 
----
-
-### 3. Install the stratum
-
-Run the script as root:
-
-```sh
-sh idleboxinstall.sh /path/to/busybox [optional-stratum-name]
-```
-
-If no name is given, the stratum defaults to `idlebox`.
-
----
-
-### 4. Done
+### 3. Done
 
 You now have a minimal BusyBox-only\* stratum.
 
----
+## Extras
 
-### 5. Password setup (optional but recommended)
+### Extra 1. DIY login (very recommended)
+
+Create an user account with no password that has in the bashrc (or zshrc or etc):
+```
+su [user]
+```
+
+### Extra 2. Password setup (not recommended)
 
 BusyBox does **not** support modern password hashes like `yescrypt`.
 
-To ensure `login` works, set a password **from inside the stratum**:
+To ensure `login` works without a user dedicated to `su`, set a password **from inside the stratum**:
 
-```sh
+```
 sudo strat [stratum-name] passwd [username]
 ```
 
@@ -69,17 +55,21 @@ SHA-256 and SHA-512 may work, but have not been tested. For better hash support,
 - Static linking
 - **glibc**, not musl
 
----
+However, the best method is step 4a.
+
+### Extra 3. Use your own `busybox` binary (may not work well)
+
+After installing idlebox, disable idlebox with the command `brl disable [name]` as root,
+as root copy your busybox binary to `/bedrock/strata/[name]/sbin/busybox`, then renable the strata as root with `brl enable [name]`
 
 ## How can I uninstall idlebox?
 
 Like any Bedrock stratum:
 
-```sh
+```
 sudo brl remove -d idlebox
 ```
 
----
 
 ## Notes
 
