@@ -4,7 +4,7 @@
 
 ## What is idlebox?
 
-idlebox is a **very minimal Bedrock Linux stratum** that provides just BusyBox — nothing else. It’s ideal for recovery, testing, or ultra-light containers. You can even use BusyBox’s own `init` system (if you're brave).
+idlebox is a **very minimal Bedrock Linux stratum** that provides just BusyBox — nothing else. It’s ideal for recovery, or if you like the most minimalistic init system ever.
 
 ## How can I use idlebox?
 
