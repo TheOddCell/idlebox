@@ -55,7 +55,7 @@ SHA-256 and SHA-512 may work, but have not been tested. For better hash support,
 - Static linking
 - **glibc**, not musl
 
-However, the best method is step 4a.
+However, the best method is extra 1.
 
 ### Extra 3. Use your own `busybox` binary (may not work well)
 
