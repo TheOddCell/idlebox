@@ -1,82 +1,89 @@
 # idlebox
 
-**idlebox** is a minimal Bedrock Linux stratum built entirely around BusyBox.
+**idlebox** is a minimal [Bedrock Linux](https://bedrocklinux.org/) stratum built entirely around BusyBox.
+
+---
 
 ## What is idlebox?
 
-idlebox is a **very minimal Bedrock Linux stratum** that provides just BusyBox — nothing else. It’s ideal for recovery, or if you like the most minimalistic init system ever.
+idlebox is a **very minimal Bedrock Linux stratum** that provides just BusyBox — nothing else.  
+It’s ideal for:
+
+- Recovery and rescue
+- Micro-container environments
+- Fans of the most minimalistic init system possible
+
+---
 
 ## How can I use idlebox?
 
-1. **Download the installer script**  
-   Grab [`idleboxinstall.sh`](https://github.com/TheOddCell/idlebox/blob/main/idleboxinstall.sh)
+### 1. Download the installer script
 
-2. **Build BusyBox yourself (recommended)**  
-   Use a version of BusyBox that’s:
-   - Compiled with `--static`
-   - Built using glibc or any **non-musl** libc
-   - Includes **all applets**, especially `init` and `login`
+Download the latest version here:  
+[`idleboxinstall.sh`](https://github.com/TheOddCell/idlebox/releases/download/v1.1.0/idleboxinstall.sh)
 
-   Example build steps:
-   ```
-   make defconfig
-   sed -i 's/^# CONFIG_STATIC is not set/CONFIG_STATIC=y/' .config
-   sed -i 's/^# CONFIG_INIT is not set/CONFIG_INIT=y/' .config
-   sed -i 's/^# \(CONFIG_[A-Z0-9_]*\) is not set/\1=y/' .config
-   make -j$(nproc)
-   ```
+---
 
-3. **Too lazy to build it yourself?** (like me?)
-   You can download prebuilt binaries from:
+### 2. Download a BusyBox binary
 
-   https://busybox.net/downloads/binaries/
+Prebuilt binaries are available at:  
+https://busybox.net/downloads/binaries/
 
-   - These are **musl-based**, so `login` may fail with modern password hashes
-   - Either:
-     - Switch `/bedrock/strata/[name]/etc/inittab` line 2 from `/bin/login` to `/bin/sh` (insecure, just gives you root)
-     - Or use **SHA-512** (`$6$`) hashes in `/etc/shadow` (see below)
+> These are musl-based. `login` may not work with modern password hashes (see step 5).
 
-4. **Install the stratum**  
-   Run the script as root:
-   ```
-   sh idleboxinstall.sh /path/to/busybox [optional-stratum-name]
-   ```
-   If no name is given, it defaults to `idlebox`.
+---
 
-5. **Done!**  
-   You now have a tiny, BusyBox-only* stratum.
+### 3. Install the stratum
 
-## Password Compatibility Notice
+Run the script as root:
 
-Modern Linux distros now use `yescrypt` for password hashing by default — but:
-
-- **BusyBox does not support `yescrypt`**
-- **musl builds make this worse** by lacking `crypt()` support for anything modern
-
-If using `login`, make sure your password hash is:
-
-- `$1$...` → **MD5**
-- `$5$...` → **SHA-256**
-- `$6$...` → **SHA-512 (recommended)**
-
-To generate a SHA-512 password hash from a glibc system:
-```
-python3 -c 'import crypt; print(crypt.crypt("Password123!", crypt.mksalt(crypt.METHOD_SHA512)))'
+```sh
+sh idleboxinstall.sh /path/to/busybox [optional-stratum-name]
 ```
 
-Put the output into `/etc/shadow`. **
+If no name is given, the stratum defaults to `idlebox`.
+
+---
+
+### 4. Done
+
+You now have a minimal BusyBox-only\* stratum.
+
+---
+
+### 5. Password setup (optional but recommended)
+
+BusyBox does **not** support modern password hashes like `yescrypt`.
+
+To ensure `login` works, set a password **from inside the stratum**:
+
+```sh
+sudo strat [stratum-name] passwd [username]
+```
+
+This generates a DES-based password hash. For security, use this only for an account dedicated to idlebox, and restrict access from outside (e.g., block SSH, VNC, RDP) so it's only usable within idlebox.
+
+SHA-256 and SHA-512 may work, but have not been tested. For better hash support, compile BusyBox yourself with:
+
+- All applets enabled
+- Static linking
+- **glibc**, not musl
+
+---
 
 ## How can I uninstall idlebox?
 
-Just like any other stratum:
-```
+Like any Bedrock stratum:
+
+```sh
 sudo brl remove -d idlebox
 ```
 
+---
+
 ## Notes
 
-- BusyBox's `init` is basic — don’t expect full service management
-- Not production-ready — use this for lightweight experiments, containers, or as a rescue stratum
+- BusyBox's `init` is very limited — no service manager, no PID 1 lifecycle management, unless you want to make it yourself
+- idlebox is not production-ready — it's best suited for experiments, containers, or recovery environments
 
-*There's a reason my favorite quote is "asterisk asterisk asterisk asterisk asterisk" from... I forgot. We have a few more config files then just busybox. But you get my point.
-**Please don't use this password. I beg you.
+\*We’ve got a few config files too. But you get my point.
