@@ -8,7 +8,6 @@ idlebox is a **very minimal Bedrock Linux stratum** that provides just BusyBox â
 Itâ€™s ideal for:
 
 - Recovery and rescue
-- Micro-container environments
 - Fans of the most minimalistic init system possible
 
 
