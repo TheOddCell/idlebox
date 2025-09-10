@@ -1,6 +1,9 @@
 # idlebox
 
 **idlebox** is a minimal [Bedrock Linux](https://bedrocklinux.org/) stratum built entirely around BusyBox.
+## NEW: tmpidlebox
+
+[tmpidlebox](https://github.com/theoddcell/tmpidlebox/) is an version of idlebox that runs as a container on any system with systemd.
 
 ## What is idlebox?
 
